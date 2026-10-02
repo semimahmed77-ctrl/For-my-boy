@@ -3,34 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Boyfriend's Day! ❤️</title>
+    <title>Boyfriend's Day Surprise 💌</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #ffe6ea; text-align: center; padding: 20px; color: #d63384; }
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
-        h1 { font-size: 24px; color: #ff4d6d; }
-        .certificate { border: 2px dashed #ff4d6d; padding: 15px; border-radius: 12px; margin-top: 15px; background: #fff0f3; }
-        .meter { background: #ffccd5; height: 20px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-        .fill { background: #ff4d6d; width: 100%; height: 100%; }
-        .btn { background: #ff4d6d; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', Arial, sans-serif; }
+        body { background: linear-gradient(135deg, #ffc3a0 0%, #ffa8a8 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; text-align: center; color: #4a4a4a; }
+        .card-container { background: white; padding: 25px 20px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); width: 100%; max-width: 380px; position: relative; overflow: hidden; }
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 420px; }
+        .screen.active { display: flex; }
+        
+        /* Banner */
+        .badge { background: #ffe6ea; color: #ff4d6d; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffccd5; }
+        
+        /* Screen 1: Heart Charge */
+        .big-heart { font-size: 70px; cursor: pointer; user-select: none; transition: transform 0.1s; margin: 20px 0; }
+        .big-heart:active { transform: scale(1.3); }
+        .progress-bar { width: 80%; background: #ffe6ea; height: 18px; border-radius: 10px; overflow: hidden; margin: 15px 0; border: 1px solid #ff4d6d; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff758c, #ff4d6d); transition: width 0.2s; }
+        
+        /* Screen 2: Playful Choice */
+        .btn-group { display: flex; gap: 15px; margin-top: 25px; width: 100%; justify-content: center; }
+        .btn { background: #ff4d6d; color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3); }
+        .btn-secondary { background: #6c757d; }
+        
+        /* Screen 3: Balloon Pop */
+        .balloon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; width: 100%; }
+        .balloon { background: #fff0f3; border: 2px dashed #ff4d6d; padding: 20px 10px; border-radius: 18px; font-size: 30px; cursor: pointer; transition: all 0.3s; }
+        .balloon.popped { background: #ffe6ea; border-style: solid; font-size: 13px; font-weight: bold; color: #d63384; display: flex; align-items: center; justify-content: center; }
+        
+        /* Screen 4: Certificate */
+        .certificate { border: 4px double #ff4d6d; padding: 20px 12px; border-radius: 15px; background: #fff0f3; width: 100%; margin-top: 15px; }
+        .cert-title { font-size: 16px; font-weight: bold; color: #d63384; letter-spacing: 1px; }
+        .cert-name { font-size: 22px; font-weight: bold; color: #ff4d6d; margin: 10px 0; border-bottom: 2px solid #ff4d6d; display: inline-block; padding-bottom: 2px; }
+        
+        h2 { color: #ff4d6d; font-size: 22px; margin-bottom: 10px; }
+        p { font-size: 14px; color: #666; line-height: 1.5; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>🎀 Happy Boyfriend's Day! 🎀</h1>
-        <p>To my absolute favorite person in the world 🥰</p>
+
+<div class="card-container">
+
+    <!-- SCREEN 1: Fill Heart -->
+    <div class="screen active" id="screen1">
+        <div class="badge">🎀 Boyfriend's Day · Oct 3 🎀</div>
+        <h2>Tap the heart to fill it up! 🥰</h2>
+        <div class="big-heart" onclick="chargeHeart()">💖</div>
+        <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+        <p id="charge-text">Tap 10 times to power up! (0%)</p>
+    </div>
+
+    <!-- SCREEN 2: Question -->
+    <div class="screen" id="screen2">
+        <div class="badge">✨ Ready for your gift? ✨</div>
+        <h2>Do you wanna see your surprise? 🥺</h2>
+        <div style="font-size: 60px; margin: 15px 0;">🎁</div>
+        <div class="btn-group">
+            <button class="btn" onclick="nextScreen(3)">YES! 😍</button>
+            <button class="btn btn-secondary" id="noBtn" onclick="dodgeNo()">NO 😜</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: Balloon Pop Game -->
+    <div class="screen" id="screen3">
+        <div class="badge">🎈 Pop them one by one! 🎈</div>
+        <h2>Pop the balloons to unlock notes!</h2>
+        <div class="balloon-grid">
+            <div class="balloon" onclick="popBalloon(this, 'You make me smile every single day 🥰')">🎈</div>
+            <div class="balloon" onclick="popBalloon(this, 'You are my safe place & peace 🏠')">🎈</div>
+            <div class="balloon" onclick="popBalloon(this, 'You are my favourite person ✨')">🎈</div>
+            <div class="balloon" onclick="popBalloon(this, 'I love you more than words say ❤️')">🎈</div>
+        </div>
+        <p id="popCount">0 / 4 popped</p>
+        <button class="btn" id="certBtn" style="display:none; margin-top:15px;" onclick="nextScreen(4)">View Official Certificate 🏆</button>
+    </div>
+
+    <!-- SCREEN 4: Official Certificate -->
+    <div class="screen" id="screen4">
+        <div class="badge">👑 To My Favourite Boy 👑</div>
         
         <div class="certificate">
-            <h3>🏆 CERTIFICATE OF LOVE 🏆</h3>
-            <p>This certificate is proudly awarded to:</p>
-            <h2 id="name">My Amazing Boyfriend</h2>
-            <p>For being the sweetest, most caring, and best partner ever! ❤️</p>
+            <div class="cert-title">🏆 CERTIFICATE OF LOVE 🏆</div>
+            <p style="font-size: 11px; margin-top:5px;">This certificate is proudly awarded to</p>
+            <div class="cert-name">My Amazing Boyfriend</div>
+            <p>For being my calm, my happiness, and the absolute best partner in the whole world! 💕</p>
         </div>
 
-        <p><b>Love Meter: 100% 💖</b></p>
-        <div class="meter"><div class="fill"></div></div>
-
-        <p>Thank you for being my peace, my home, and my favorite notification! ✨</p>
+        <div style="margin-top: 15px; font-size: 13px; color: #ff4d6d; font-weight: bold;">
+            Love Meter: 10000% 💖
+        </div>
+        <p style="margin-top: 10px; font-size: 12px;">Happy Boyfriend's Day, my love! 🥰✨</p>
     </div>
+
+</div>
+
+<script>
+    let clicks = 0;
+    function chargeHeart() {
+        if(clicks < 10) {
+            clicks++;
+            let pct = clicks * 10;
+            document.getElementById('fill').style.width = pct + '%';
+            document.getElementById('charge-text').innerText = 'Charging love... (' + pct + '%)';
+            if(clicks === 10) {
+                setTimeout(() => nextScreen(2), 500);
+            }
+        }
+    }
+
+    function dodgeNo() {
+        let noBtn = document.getElementById('noBtn');
+        noBtn.style.position = 'absolute';
+        noBtn.style.top = Math.random() * 80 + '%';
+        noBtn.style.left = Math.random() * 70 + '%';
+    }
+
+    let poppedCount = 0;
+    function popBalloon(element, message) {
+        if(!element.classList.contains('popped')) {
+            element.classList.add('popped');
+            element.innerText = message;
+            poppedCount++;
+            document.getElementById('popCount').innerText = poppedCount + ' / 4 popped';
+            if(poppedCount === 4) {
+                document.getElementById('certBtn').style.display = 'inline-block';
+            }
+        }
+    }
+
+    function nextScreen(screenNum) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen' + screenNum).classList.add('active');
+    }
+</script>
+
 </body>
-  </html>
-  
+    </html>
+            
